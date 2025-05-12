@@ -51,7 +51,7 @@ jobs:
       - name: Deploy to ECS
         run: |
           aws ecs update-service \
-            --cluster my-cluster \
-            --service my-service \
+            --cluster backend \
+            --service service-service-3yyqtrfw \
             --force-new-deployment \
             --region us-east-1
