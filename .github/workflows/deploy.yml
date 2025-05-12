@@ -28,7 +28,7 @@ jobs:
           --region us-east-1 \
         | docker login \
           --username AWS \
-          --password-stdin 863518417758.dkr.ecr.us-east-1.amazonaws.com
+          --password-stdin 863518417758.dkr.ecr.us-east-1.amazonaws.com 
 
     - name: Build, tag, and push Docker image
       run: |
