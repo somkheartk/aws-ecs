@@ -37,4 +37,4 @@ jobs:
           --cluster my-cluster \
           --service my-service \
           --force-new-deployment \
-          --region us-east-1  # ใช้ region เดียวกับ ECR
+          --region us-east-1  # ใช้ region เดียวกับ ECR 
