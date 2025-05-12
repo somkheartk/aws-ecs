@@ -27,6 +27,10 @@ jobs:
         docker tag mobile-lpr/backend:latest 863518417758.dkr.ecr.us-east-1.amazonaws.com/mobile-lpr/backend:latest
         docker push 863518417758.dkr.ecr.us-east-1.amazonaws.com/mobile-lpr/backend:latest
 
+    - name: Verify AWS credentials
+      run: |
+        aws sts get-caller-identity  # ตรวจสอบว่า AWS credentials ถูกต้องและเชื่อมต่อกับ AWS ได้
+
     - name: Deploy to ECS
       run: |
         aws ecs update-service \
