@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # เปิดพอร์ต
-EXPOSE 80
+EXPOSE 3000
 
 # คำสั่งรันโปรเจกต์ (สามารถเปลี่ยนเป็น npm run start:dev สำหรับ development)
 CMD ["node", "dist/main"]
