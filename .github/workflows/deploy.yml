@@ -11,44 +11,49 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    steps:   # <<-- ต้องเยื้องเข้าไปใน deploy
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
-        aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            us-east-1
 
-    - name: Login to Amazon ECR 
-      run: |
-        aws ecr get-login-password \
-          --region us-east-1 \
-        | docker login \
-          --username AWS \
-          --password-stdin 863518417758.dkr.ecr.us-east-1.amazonaws.com 
+      - name: Debug AWS secrets loading
+        run: |
+          echo "AWS_ACCESS_KEY_ID loaded with length: ${#AWS_ACCESS_KEY_ID}"
+          echo "AWS_SECRET_ACCESS_KEY loaded with length: ${#AWS_SECRET_ACCESS_KEY}"
 
-    - name: Build, tag, and push Docker image
-      run: |
-        IMAGE=mobile-lpr/backend
-        ECR=863518417758.dkr.ecr.us-east-1.amazonaws.com
-        TAG=latest
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password \
+            --region us-east-1 \
+          | docker login \
+            --username AWS \
+            --password-stdin 863518417758.dkr.ecr.us-east-1.amazonaws.com
 
-        docker build -t $IMAGE .
-        docker tag $IMAGE:$TAG $ECR/$IMAGE:$TAG
-        docker push $ECR/$IMAGE:$TAG
+      - name: Build, tag, and push Docker image
+        run: |
+          IMAGE=mobile-lpr/backend
+          ECR=863518417758.dkr.ecr.us-east-1.amazonaws.com
+          TAG=latest
 
-    - name: Verify AWS credentials
-      run: |
-        echo "Checking AWS identity..."
-        aws sts get-caller-identity
+          docker build -t $IMAGE .
+          docker tag $IMAGE:$TAG $ECR/$IMAGE:$TAG
+          docker push $ECR/$IMAGE:$TAG
 
-    - name: Deploy to ECS
-      run: |
-        aws ecs update-service \
-          --cluster my-cluster \
-          --service my-service \
-          --force-new-deployment \
-          --region us-east-1   
+      - name: Verify AWS credentials
+        run: |
+          echo "Checking AWS identity..."
+          aws sts get-caller-identity
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service \
+            --cluster my-cluster \
+            --service my-service \
+            --force-new-deployment \
+            --region us-east-1
