@@ -11,7 +11,7 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
 
-    steps:   # <<-- ต้องเยื้องเข้าไปใน deploy
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -20,7 +20,7 @@ jobs:
         with:
           aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:            us-east-1
+          aws-region: us-east-1
 
       - name: Debug AWS secrets loading
         run: |
@@ -29,9 +29,7 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password \
-            --region us-east-1 \
-          | docker login \
+          aws ecr get-login-password --region us-east-1 | docker login \
             --username AWS \
             --password-stdin 863518417758.dkr.ecr.us-east-1.amazonaws.com
 
@@ -41,7 +39,7 @@ jobs:
           ECR=863518417758.dkr.ecr.us-east-1.amazonaws.com
           TAG=latest
 
-          docker build -t $IMAGE .
+          docker build -t $IMAGE:$TAG .
           docker tag $IMAGE:$TAG $ECR/$IMAGE:$TAG
           docker push $ECR/$IMAGE:$TAG
 
